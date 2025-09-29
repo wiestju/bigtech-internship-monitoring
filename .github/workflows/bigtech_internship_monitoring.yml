@@ -25,5 +25,6 @@ jobs:
       - name: Run BigTech internship monitoring
         env:
           WEBHOOK_URLS_JSON: ${{ secrets.WEBHOOK_URLS_JSON }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           python main.py
