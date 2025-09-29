@@ -2,6 +2,7 @@ import datetime
 
 import requests
 from utils.webhook import send_webhook
+from utils.job_storage import is_new_job
 
 def getJobsAmazon():
     r = requests.post(

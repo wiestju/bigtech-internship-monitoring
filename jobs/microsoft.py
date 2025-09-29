@@ -2,6 +2,7 @@ import datetime
 
 import requests
 from utils.webhook import send_webhook
+from utils.job_storage import is_new_job
 
 def getJobsMicrosoft():
     r = requests.get(
