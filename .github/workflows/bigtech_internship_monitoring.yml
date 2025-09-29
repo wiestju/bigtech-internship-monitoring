@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  monitor_jobs:
+  bigtech_internship_monitoring:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
