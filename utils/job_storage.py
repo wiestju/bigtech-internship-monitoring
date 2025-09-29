@@ -5,7 +5,7 @@ import base64
 
 from config import GITHUB_STORAGE_URL
 
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+GITHUB_TOKEN = os.getenv('GH_TOKEN')
 
 r = requests.get(
         f'{GITHUB_STORAGE_URL}',
