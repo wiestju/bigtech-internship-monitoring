@@ -2,6 +2,7 @@ import requests
 import os
 import json
 import base64
+import copy
 
 from config import GITHUB_STORAGE_URL
 
@@ -13,10 +14,10 @@ r = requests.get(
             'Authorization': f'Bearer {GITHUB_TOKEN}',
             'Accept': 'application/vnd.github.v3+json'
         }
-    )
+)
 
 content = json.loads(base64.b64decode(r.json()['content'].encode()).decode())
-old_content = content
+old_content = json.loads(base64.b64decode(r.json()['content'].encode()).decode())
 
 def is_new_job(company, jobId):
 
@@ -30,8 +31,15 @@ def is_new_job(company, jobId):
 
     return True
 
+def check_if_lists_are_equal():
+    for company in content:
+        for id_ in content[company]:
+            if id_ not in old_content[company]:
+                return False
+    return True
+
 def update_job_storage():
-    if old_content == content:
+    if check_if_lists_are_equal():
         return False
 
     f = requests.put(
@@ -54,4 +62,5 @@ def update_job_storage():
             'sha': r.json()['sha']
         }
     )
+
     return True
