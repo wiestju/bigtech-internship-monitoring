@@ -35,6 +35,8 @@ def getJobsAmazon():
                 "sortOrder": "DESCENDING",
                 "sortType": "SCORE"
             }, "treatment": "OM",
+        }, headers={
+            'accept-encoding': 'plain'
         }
     )
 
