@@ -9,6 +9,8 @@ from utils.job_storage import load_job_storage, update_job_storage
 from jobs.amazon import getJobsAmazon
 from jobs.microsoft import getJobsMicrosoft
 from jobs.facebook import getJobsFacebook
+from jobs.google import getJobsGoogle
+from jobs.apple import getJobsApple
 
 # Configure logging
 logging.basicConfig(
@@ -37,7 +39,9 @@ def main():
     companies = [
         ("Amazon", getJobsAmazon),
         ("Microsoft", getJobsMicrosoft),
-        ("Meta/Facebook", getJobsFacebook)
+        ("Meta/Facebook", getJobsFacebook),
+        ("Google", getJobsGoogle),
+        ("Apple", getJobsApple)
     ]
     
     total_new_jobs = 0

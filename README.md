@@ -12,17 +12,19 @@ The system currently monitors internships from:
 | **Amazon** | JSON REST API | ✅ Active |
 | **Microsoft** | JSON REST API | ✅ Active |
 | **Meta/Facebook** | GraphQL API | ✅ Active |
-| Google | HTML Scraping | 🚧 Planned |
-| Apple | HTML Scraping | 🚧 Planned |
+| **Google** | HTML Scraping (with Pagination) | ✅ Active |
+| **Apple** | JSON REST API | ✅ Active |
 
 ## 🚀 Features
 
 - ✅ Automated job scraping from multiple sources
+- ✅ **Multi-page pagination support** for large job listings
 - ✅ Discord webhook notifications with rich embeds
 - ✅ Duplicate detection using GitHub storage
 - ✅ Comprehensive error handling and logging
 - ✅ Configurable via environment variables
 - ✅ Request timeouts and retry logic
+- ✅ Support for both JSON APIs and HTML scraping
 
 ## 📋 Requirements
 
@@ -63,7 +65,7 @@ The system currently monitors internships from:
    GH_TOKEN=your_github_personal_access_token
    
    # Discord Webhook URLs (JSON format)
-   WEBHOOK_URLS_JSON={"amazon":"https://discord.com/api/webhooks/...","microsoft":"https://discord.com/api/webhooks/...","facebook":"https://discord.com/api/webhooks/..."}
+   WEBHOOK_URLS_JSON={"amazon":"https://discord.com/api/webhooks/...","microsoft":"https://discord.com/api/webhooks/...","facebook":"https://discord.com/api/webhooks/...","google":"https://discord.com/api/webhooks/...","apple":"https://discord.com/api/webhooks/..."}
    ```
 
 ## 🎯 Usage
@@ -128,7 +130,9 @@ bigtech-internship-monitoring/
 │   ├── __init__.py
 │   ├── amazon.py         # Amazon internships scraper
 │   ├── microsoft.py      # Microsoft internships scraper
-│   └── facebook.py       # Meta/Facebook internships scraper
+│   ├── facebook.py       # Meta/Facebook internships scraper
+│   ├── google.py         # Google internships scraper (HTML parsing with pagination)
+│   └── apple.py          # Apple internships scraper
 ├── utils/                 # Utility modules
 │   ├── __init__.py
 │   ├── job_storage.py    # GitHub storage management
@@ -151,16 +155,31 @@ bigtech-internship-monitoring/
 - Check the GitHub repository URL in `config.py`
 
 **"No webhook URL configured"**
-- Ensure `WEBHOOK_URLS_JSON` contains all company keys: `amazon`, `microsoft`, `facebook`
+- Ensure `WEBHOOK_URLS_JSON` contains all company keys: `amazon`, `microsoft`, `facebook`, `google`, `apple`
 - Verify the JSON format is valid
 
 **"Request timeout"**
 - Increase `REQUEST_TIMEOUT` in `config.py` (default: 30 seconds)
 - Check your internet connection
 
+**"Discord webhook rate limit (429)"**
+- This is normal when many new jobs are posted at once
+- Discord webhooks have rate limits (~5 messages per 2 seconds)
+- The system will continue processing; some notifications may be delayed
+
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
+
+### Adding a New Company
+
+To add support for a new company:
+
+1. Create a new scraper file in `jobs/` (e.g., `jobs/newcompany.py`)
+2. Implement a `getJobsNewCompany()` function that returns the number of new jobs found
+3. Add the import and function call in `main.py`
+4. Add a webhook URL for the company in your `.env` file
+5. Update the README with the new company
 
 ## 📧 Contact
 
