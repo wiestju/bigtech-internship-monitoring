@@ -18,14 +18,15 @@ def getJobsMicrosoft() -> Optional[int]:
     """
     try:
         r = requests.get(
-            'https://gcsservices.careers.microsoft.com/search/api/v1/search',
+            'https://apply.careers.microsoft.com/api/pcsx/search',
             params={
-                'et': 'Internship',
-                'l': 'en_us',
-                'pg': '1',
-                'pgSz': '100',
-                'o': 'Relevance',
-                'flt': 'true',
+                'domain': 'microsoft.com',
+                'query': '',
+                'location': '',
+                'start': '0',
+                'sort_by': 'timestamp',
+                'filter_profession': 'software engineering',
+                'filter_seniority': 'Intern'
             },
             timeout=REQUEST_TIMEOUT
         )
@@ -36,7 +37,7 @@ def getJobsMicrosoft() -> Optional[int]:
 
     try:
         data = r.json()
-        jobs = data['operationResult']['result']['jobs']
+        jobs = data['data']['positions']
     except (ValueError, KeyError) as e:
         logger.error(f"Failed to parse Microsoft API response: {e}")
         return None
@@ -44,18 +45,16 @@ def getJobsMicrosoft() -> Optional[int]:
     new_jobs_count = 0
     for job in jobs:
         try:
-            title = job['title']
-            postingDate = datetime.datetime.fromisoformat(job['postingDate'])
-            location = job['properties']['primaryLocation']
-            profession = job['properties']['profession']
-            discipline = job['properties']['discipline']
-            educationLevel = job['properties']['educationLevel']
-            jobId = job['jobId']
+            title = job['name']
+            postingDate = datetime.datetime.fromtimestamp(job['postedTs'])
+            location = job['locations']
+            department = job['department']
+            jobId = job['id']
         except (KeyError, ValueError) as e:
             logger.warning(f"Skipping malformed Microsoft job entry: {e}")
             continue
 
-        url = 'https://jobs.careers.microsoft.com/global/en/job/' + jobId
+        url = 'https://apply.careers.microsoft.com/careers/job/' + str(jobId)
 
         try:
             payload = {
@@ -71,16 +70,8 @@ def getJobsMicrosoft() -> Optional[int]:
                         },
                         'fields': [
                             {
-                                'name': 'Profession',
-                                'value': f'{profession}',
-                            },
-                            {
-                                'name': 'Discipline',
-                                'value': f'{discipline}'
-                            },
-                            {
-                                'name': 'Education Level',
-                                'value': f'{educationLevel}'
+                                'name': 'Department',
+                                'value': f'{department}',
                             },
                             {
                                 'name': 'Location',
