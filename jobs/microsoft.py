@@ -4,6 +4,7 @@ import logging
 from typing import Optional
 
 import requests
+from utils.http import get_with_retry
 from utils.webhook import send_webhook
 from utils.job_storage import is_new_job
 from config import REQUEST_TIMEOUT
@@ -17,7 +18,7 @@ def getJobsMicrosoft() -> Optional[int]:
         Number of new jobs found, or None if error occurred.
     """
     try:
-        r = requests.get(
+        r = get_with_retry(
             'https://apply.careers.microsoft.com/api/pcsx/search',
             params={
                 'domain': 'microsoft.com',
@@ -30,7 +31,6 @@ def getJobsMicrosoft() -> Optional[int]:
             },
             timeout=REQUEST_TIMEOUT
         )
-        r.raise_for_status()
     except requests.RequestException as e:
         logger.error(f"Failed to fetch Microsoft jobs: {e}")
         return None
